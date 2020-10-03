@@ -122,6 +122,10 @@ bool simulate_projectile(const double magnitude, const double angle,
       y = v0_y * t  - 0.5 * g * t * t;
       x = v0_x * t;
     }
+
+    telemetry=append_to_array(t,telemetry,telemetry_current_size,telemetry_max_size);
+    telemetry=append_to_array(x,telemetry,telemetry_current_size,telemetry_max_size);
+    telemetry=append_to_array(y,telemetry,telemetry_current_size,telemetry_max_size);
   }
 
   return hit_target;
@@ -133,5 +137,34 @@ void merge_telemetry(double **telemetries,
                      double* &telemetry,
                      int &telemetry_current_size,
                      int &telemetry_max_size) {
-  // IMPLEMENT YOUR FUNCTION HERE
+
+    for (int i=0;i<tot_telemetries;i++){
+        for (int j=0;j<telemetries_sizes[i];j++){
+            telemetry=append_to_array(telemetries[i][j],telemetry,telemetry_current_size,telemetry_max_size);
+       }
+    }
+
+    for (int i=0;i<telemetry_current_size;i+=3){
+
+        for (int j=i+3;j<telemetry_current_size;j+=3){
+            double e1=telemetry[i];
+            double e2=telemetry[j];
+            if (e1>e2){ // we swap
+                double x1=*(telemetry+i+1);
+                double y1=*(telemetry+i+2);
+                double x2=*(telemetry+j+1);
+                double y2=*(telemetry+j+2);
+                telemetry[i]=e2;
+                telemetry[i+1]=x2;
+                telemetry[i+2]=y2;
+                telemetry[j]=e1;
+                telemetry[j+1]=x1;
+                telemetry[j+2]=y1;
+
+            }
+
+        }
+    }
+
 }
+
